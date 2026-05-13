@@ -43,7 +43,7 @@ GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
 GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
 
 # OAuth redirect URI - update this based on your deployment
-REDIRECT_URI = os.getenv("REDIRECT_URI", "http://localhost:8501")
+REDIRECT_URI = os.getenv("REDIRECT_URI")
 
 # ============================================================================
 # UI CONFIGURATION
