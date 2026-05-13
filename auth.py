@@ -35,8 +35,7 @@ def get_oauth_component():
         client_secret=config.GOOGLE_CLIENT_SECRET,
         authorize_endpoint=AUTHORIZE_ENDPOINT,
         token_endpoint=TOKEN_ENDPOINT,
-        refresh_token_endpoint=TOKEN_ENDPOINT,
-        revoke_token_endpoint=REVOKE_ENDPOINT,
+        refresh_token_endpoint=TOKEN_ENDPOINT
     )
     
     return oauth2
