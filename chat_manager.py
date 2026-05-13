@@ -8,6 +8,7 @@ This module handles the business logic for chat operations including:
 - Interfacing between the UI and database layers
 """
 
+
 import cohere
 from typing import List, Dict, Optional, Tuple
 import config
@@ -48,27 +49,25 @@ class ChatSession:
         self.chat_id = chat_id
         self._messages_cache = None  # Cache messages to avoid repeated DB queries
     
-    
-    def create_new(self, first_message: str) -> str:
+    def create_new(   self, user_id: int, first_message: str) -> str:
         """
-        Create a new chat session with a title based on the first message.
-        
-        Args:
-            first_message: The first user message
-            
-        Returns:
-            str: The new chat_id
+        Create a new chat session.
         """
-        # Generate a title from the first message
+
+        # Generate title
         title = config.generate_chat_title(first_message)
-        
-        # Create the chat in the database
-        self.chat_id = db.create_new_chat(title)
-        
-        # Clear the cache
+
+        # Create chat in database
+        self.chat_id = db.create_new_chat(
+            user_id,
+            title
+        )
+
+        # Clear cache
         self._messages_cache = None
-        
+
         return self.chat_id
+    
     
     
     def load_messages(self, force_refresh: bool = False) -> List[Dict]:
@@ -187,14 +186,14 @@ def send_message_to_ai(message: str, chat_history: List[Dict]) -> str:
 # CHAT HISTORY MANAGEMENT
 # ============================================================================
 
-def get_all_chat_sessions() -> List[Dict]:
+def get_all_chat_sessions(user_id: int) -> List[Dict]:
     """
     Get all chat sessions from the database.
     
     Returns:
         List[Dict]: List of chat dictionaries, ordered by most recent
     """
-    return db.get_all_chats()
+    return db.get_all_chats(user_id)
 
 
 def get_chat_preview(chat_id: str) -> Dict:

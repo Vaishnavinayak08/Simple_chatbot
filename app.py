@@ -25,6 +25,12 @@ from chat_manager import (
     get_all_chat_sessions,
     initialize_chatbot
 )
+from auth import (
+    initialize_auth_session,
+    is_authenticated,
+    show_login_page,
+    show_user_profile
+)
 
 # ============================================================================
 # INITIALIZE APPLICATION
@@ -37,6 +43,14 @@ st.set_page_config(
     page_icon=config.PAGE_ICON,
     layout=config.LAYOUT
 )
+# Initialize authentication session
+initialize_auth_session()
+# If user is not logged in
+if not is_authenticated():
+
+    show_login_page()
+
+    st.stop()
 
 # ============================================================================
 # SESSION STATE INITIALIZATION
@@ -76,18 +90,19 @@ if "chat_id" in query_params:
 with st.sidebar:
 
     st.title(config.SIDEBAR_TITLE)
+    show_user_profile()
 
     # ------------------------------------------------------------------------
     # NEW CHAT BUTTON
     # ------------------------------------------------------------------------
 
     if st.button(config.NEW_CHAT_BUTTON_TEXT, use_container_width=True):
-
+    
         # Reset current chat
         st.session_state.current_chat_id = None
         st.session_state.chat_session = None
 
-        # Clear URL query params
+        # Remove old chat_id from URL
         st.query_params.clear()
 
         st.rerun()
@@ -98,7 +113,7 @@ with st.sidebar:
     # LOAD ALL CHATS
     # ------------------------------------------------------------------------
 
-    all_chats = get_all_chat_sessions()
+    all_chats = get_all_chat_sessions(st.session_state.get("user_id"))
 
     if len(all_chats) == 0:
         st.info("No chats yet. Start a new conversation!")
@@ -129,9 +144,10 @@ with st.sidebar:
                 use_container_width=True,
                 type=button_type
             ):
-
+                
                 st.session_state.current_chat_id = chat_id
                 st.session_state.chat_session = ChatSession(chat_id)
+                st.query_params["chat_id"] = chat_id
 
                 st.rerun()
         # RENAME BUTTON
@@ -260,7 +276,7 @@ if user_input:
         new_chat = ChatSession()
 
         # Create database chat entry
-        chat_id = new_chat.create_new(user_input)
+        chat_id = new_chat.create_new(st.session_state.user_id,user_input)
 
         # Save in session state
         st.session_state.current_chat_id = chat_id

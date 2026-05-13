@@ -5,6 +5,7 @@ This file contains all configuration settings including:
 - Database settings
 - Model configuration
 - UI settings
+- Authentication settings
 """
 
 import os
@@ -33,6 +34,16 @@ COHERE_MODEL = "command-r7b-12-2024"
 # Get API key from environment variable
 # You'll set this in .env file
 COHERE_API_KEY = os.getenv("COHERE_API_KEY")
+
+# ============================================================================
+# GOOGLE OAUTH CONFIGURATION
+# ============================================================================
+
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+
+# OAuth redirect URI - update this based on your deployment
+REDIRECT_URI = os.getenv("REDIRECT_URI", "http://localhost:8501")
 
 # ============================================================================
 # UI CONFIGURATION
